@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import {createAuthUserWithEmailAndPassword,createUserDocumentFromAuth}from '../../utils/firebase/firebase.utils'
 
 
 const defaultFormFields={
@@ -13,6 +14,35 @@ const SignUp=()=>{
    const {displayName,email,password,confirmPassword}= formFields;
 
    console.log(formFields);
+   const restFormFields=()=>{
+    setFormFields(defaultFormFields);
+}
+
+const handleSubmit=async(event)=>{
+
+        event.preventDefault();
+
+        if (password !== confirmPassword){
+            alert('password do not match');
+            return;
+        }
+        try{
+
+            const {user}= await createAuthUserWithEmailAndPassword(email,password);
+            await createUserDocumentFromAuth(user,{displayName});
+            restFormFields();
+        }
+        catch(error)
+        
+        { if (error.code === 'auth/email-alrady-in-use')
+             {  alert('can not create user , eamil alreay in use')}
+             else{ console.log('user creation encounter an error ', error);}
+   
+    }
+
+}
+
+
 
    const handleChange= (event)=>{
 
@@ -25,7 +55,7 @@ return(
 
 <div>
     <h1> Sign up with your email and password </h1>
-        <form onSubmit={()=>{}} >
+        <form onSubmit={ handleSubmit}>
             <label> Display Name </label>
                 < input type="text" required onChange={handleChange} name='displayName' value={displayName}/>
                   <label> Email </label>
@@ -34,7 +64,7 @@ return(
                           < input type="password" required onChange={handleChange} name='password'value={password}/>
                              <label> Confirm Password </label>
                                 < input type="password" required onChange={handleChange} name='confirmPassword'value={confirmPassword}/>
-                                  <button type="submit"></button>
+                                  <button type="submit"> signUP</button>
         </form>
 </div>
 );
