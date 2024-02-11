@@ -23,7 +23,7 @@ return (
                     <br/>
                     <span>decrement</span>
                     <br/>
-                    <span onClick={() => addItemToCart(cartItem)}>increment</span>
+                    <span onClick={()   => addItemToCart(cartItem)}>increment</span>
                 </div>
             )
 
