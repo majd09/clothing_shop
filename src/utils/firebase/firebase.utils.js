@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 import { getAuth,signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword,signInWithEmailAndPassword ,onAuthStateChanged, signOut}from 'firebase/auth'
-import {getFirestore, doc , getDoc,setDoc,collection,writeBatch} from 'firebase/firestore'
+import {getFirestore, doc , getDoc,setDoc,collection,writeBatch,query,getDocs} from 'firebase/firestore'
 const firebaseConfig = {
     apiKey: "AIzaSyC6UV1jxknFMCnTvzkd1FoCFQSoxLbTT-I",
     authDomain: "clothing-shop-60e73.firebaseapp.com",
@@ -31,9 +31,22 @@ export const addCollectionAndDocuments=async(collectionskey,objectsToAdd)=>{
         batch.set(docRef,object);
     });
     await batch.commit() ;
+    console.log('done');
 }
 
+export const getCategoriesAndDocuments= async()=>{
+    const collectionRef=collection(db,'categories');
+    const q= query(collectionRef);
+    const querySnapshot= await getDocs(q);
+    const categoryMap= querySnapshot.docs.reduce((acc,docSnapshot)=>{
 
+        const {title,items}=docSnapshot.data();
+        acc[title.toLowerCase()]=items;
+        return acc;
+    },{}); 
+        return categoryMap;
+
+}
 
 export const createUserDocumentFromAuth= async(userAuth, additionalInformation)=>{
     if(!userAuth)return;
