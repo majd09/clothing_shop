@@ -1,9 +1,10 @@
 import './category.component.scss';
 import { useParams } from 'react-router-dom';
-import { UserContext } from '../../context/user.context';
-import { CategoriesCotext } from '../../context/categories.context';
-import { useContext,useEffect,useState } from 'react';
+
+import { Fragment, useContext,useEffect,useState } from 'react';
 import ProductsCard from '../../componets/products_card/products_card.components';
+import { CategoriesCotext } from '../../context/categories.context';
+
 const Category=()=>{
 
 const {category}=useParams();
@@ -15,16 +16,21 @@ useEffect(()=>{
 setProducts(categoriesMap[category]);
 },[categoriesMap,category])
 return (
+            <Fragment>
+            <h2 className='category-title'>{category.toLocaleUpperCase()}</h2>
 
+            <div className='category-containers'>
+              
+              {
+                  products &&
+                  products.map((product)=>( <ProductsCard  key={product.id} product={product}/>  ))
+              
+              }
+              </div>
 
-        <div className='category-containers'>
-
-            {
-                products &&
-                products.map((product)=>{  <ProductsCard  key={product.id} product={product}/> } )
-            
-            }
-            </div>
+            </Fragment>
+      
+       
 )
 }
 
